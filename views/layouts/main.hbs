@@ -13,15 +13,23 @@
     <title>Story Book</title>
 </head>
 <body>
-    <div class="container">
-        {{> _header}}
+    {{> _header}}
+     {{> _add_btn}}
+    <div class="container"> 
         {{{body}}}   <!-- we are using 3 curly brackets because we need handle bars to parse html if it's regular js we will use 2-->
     </div>
 
 
      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> <!--copied from materialize css.com-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.14.1/ckeditor.js"
+        integrity="sha256-bEIQpI72w9NJuIVhTLFUF2/8uxl0u5800r8ddViuv+o=" crossorigin="anonymous"></script>
+
      <script>
         M.Sidenav.init(document.querySelector('.sidenav'))
+        M.FormSelect.init(document.querySelector('#status'))
+         CKEDITOR.replace('body',{
+            plugins: 'wysiwygarea, toolbar, basicstyles, link'  
+        })
      </script>
 </body>
 </html>

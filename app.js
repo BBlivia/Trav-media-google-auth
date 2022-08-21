@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const exphbs = require('express-handlebars') //* sets up our template im using handlebars
 const passport = require('passport')
 const session = require('express-session')
+const MongoStore = require('connect-mongo') //stores session in MOngo
 const connectDB = require('./config/db'); // we importted the function we just build in db.js
 
 
@@ -14,6 +15,11 @@ dotenv.config({path: './config/config.env' })
 
 connectDB()
 const app = express()
+
+//Body Parser
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
+
 
 //LOGGING
 if(process.env.NODE_ENV === 'development'){
@@ -35,8 +41,8 @@ require('./config/passport')(passport)
 app.use(session ({
     secret: 'keyboard cat',
     resave: false,   //dont wanna save a session
-saveUninitialized: false,  //dont create session if nothing in store
-cookie: {secure: true }
+    saveUninitialized: false,  //dont create session if nothing in store
+    store:MongoStore.create({mongoUrl: process.env.MONGO_URI})                            //stores session in database so that when we load our page it doesnt kick the user out of the app
     
 })
 )
@@ -50,6 +56,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //Routes
 app.use('/', require('./routes/index')) 
 app.use('/auth', require('./routes/auth')) 
+app.use('/stories', require('./routes/stories')) 
 
 const PORT = process.env.PORT || 4001  // accessing port on env file
 app.listen(PORT, console.log(`server running on ${process.env.NODE_ENV} mode on PORT ${PORT}`)) // NODE_ENV comes from our script 
